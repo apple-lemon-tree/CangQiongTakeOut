@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.abc.mapper.DishMapper">
+    <!-- 新增菜品 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into dish (name,category_id,price,image,description,status,create_time,update_time,create_user,update_user)
+        values (#{name},#{categoryId},#{price},#{image},#{description},#{status},#{createTime},#{updateTime},#{createUser},#{updateUser})
+    </insert>
+
+    <!-- 分页查询菜品 -->
+    <select id="pageQuery" resultType="com.abc.vo.DishVO">
+        select d.*, c.name categoryName from dish d left join category c on d.category_id=c.id
+        <where>
+            <if test="name != null">
+                and d.name like concat('%',#{name},'%')
+            </if>
+            <if test="categoryId != null">
+                and d.category_id =#{categoryId}
+            </if>
+            <if test="status != null and status != ''">
+                and d.status = #{status}
+            </if>
+        </where>
+        order by d.create_time desc
+    </select>
+
+    <!-- 根据ids删除相应的菜品 -->
+    <delete id="deleteByIds">
+        delete from dish where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            {id}
+        </foreach>
+    </delete>
+
+    <!--根据Id查询菜品信息，返回的数据格式-->
+    <resultMap id="dishResultMap" type="com.abc.vo.DishVO">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="category_id" property="categoryId"/>
+        <result column="price" property="price"/>
+        <result column="image" property="image"/>
+        <result column="description" property="description"/>
+        <result column="status" property="status"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="category_name" property="categoryName"/>
+        <collection property="flavors" ofType="com.abc.entity.DishFlavor">
+            <id column="flavor_id" property="id"/>
+            <result column="flavor_name" property="name"/>
+            <result column="flavor_value" property="value"/>
+        </collection>
+    </resultMap>
+    <!-- 根据id查询菜品信息 -->
+    <select id="selectById" resultMap="dishResultMap">
+        select
+            d.*,
+            f.id flavor_id,
+            f.name flavor_name,
+            f.value flavor_value,
+            c.name category_name
+        from dish d
+                 left join dish_flavor f on d.id = f.dish_id
+                 left join category c on d.category_id = c.id
+        where d.id = #{id}
+    </select>
+
+    <update id="update">
+        update dish
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="categoryId != null">category_id = #{categoryId},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="image != null">image = #{image},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateUser != null">update_user = #{updateUser},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="list" resultType="com.abc.entity.Dish">
+        select * from dish where category_id = #{id} and status != 0
+    </select>
+</mapper>

@@ -1,0 +1,6 @@
+cqwm:
+  aliyun:
+    oss:
+      endpoint: https://oss-cn-beijing.aliyuncs.com
+      bucketName: gcy-java-ai
+      region: cn-beijing

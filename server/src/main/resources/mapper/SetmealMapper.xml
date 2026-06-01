@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.abc.mapper.SetmealMapper">
+
+    <!-- 套餐分类查询 -->
+    <select id="pageQuery" resultType="com.abc.vo.SetmealVO">
+        select s.*, c.name categoryName
+            from setmeal s
+                left join category c on s.category_id = c.id
+        <where>
+            <if test="name != null and name != ''">
+                and s.name like concat('%',#{name},'%')
+            </if>
+            <if test="categoryId != null">
+                and s.category_id = #{categoryId}
+            </if>
+            <if test="status != null">
+                and s.status = #{status}
+            </if>
+        </where>
+        order by update_time desc
+    </select>
+
+    <!-- 新增套餐 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into setmeal (category_id,name,price,status,description,image,create_time,update_time,create_user,update_user)
+        values (#{categoryId},#{name},#{price},#{status},#{description},#{image},#{createTime},#{updateTime},#{createUser},#{updateUser})
+    </insert>
+
+    <!-- 根据id查询套餐信息 -->
+    <select id="selectById" resultMap="setmealResultMap">
+        select
+            s.*,
+            sd.id setmeal_dish_id,
+            sd.name dish_name,
+            sd.dish_id dish_id,
+            sd.price dish_price,
+            sd.setmeal_id dish_setmeal_id,
+            sd.copies dish_copies,
+            c.name categoryName
+        from setmeal s
+            left join setmeal_dish sd on sd.setmeal_id = s.id
+            left join category c on s.category_id = c.id
+        where s.id = #{id}
+    </select>
+
+    <resultMap id="setmealResultMap" type="com.abc.vo.SetmealVO">
+        <id column="id" property="id"/>
+        <result column="category_id" property="categoryId"/>
+        <result column="name" property="name"/>
+        <result column="price" property="price"/>
+        <result column="status" property="status"/>
+        <result column="description" property="description"/>
+        <result column="image" property="image"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="category_name" property="categoryName"/>
+        <collection property="setmealDishes" ofType="com.abc.entity.SetmealDish">
+            <id column="setmeal_dish_id" property="id"/>
+            <result column="dish_setmeal_id" property="setmealId"/>
+            <result column="dish_id" property="dishId"/>
+            <result column="dish_name" property="name"/>
+            <result column="dish_price" property="price"/>
+            <result column="dish_copies" property="copies"/>
+        </collection>
+    </resultMap>
+
+    <!-- 更新套餐基本数据 -->
+    <update id="updateSetmeal">
+        update setmeal
+        <set>
+            <if test="categoryId != null">category_id = #{categoryId},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="image != null">image = #{image},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateUser != null">update_user = #{updateUser},</if>
+        </set>
+        where id = #{id}
+    </update>
+</mapper>
