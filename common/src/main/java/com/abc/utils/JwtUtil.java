@@ -14,9 +14,9 @@ import java.util.Map;
 
 @Component
 public class JwtUtil {
-    @Value("${jwt.secret-key}")
+    @Value("${jwt.admin-secret-key}")
     private String secretKey;//jwt中尾部签名，可以防止Token被篡改，确保安全性
-    @Value("${jwt.expiration}")
+    @Value("${jwt.admin-expiration}")
     private Long expirationTime;
 
 
@@ -33,6 +33,7 @@ public class JwtUtil {
      */
     public String generateToken(String subject, Map<String,Object> claims){
 
+        //TODO
         return Jwts.builder()
                 .claims(claims)
                 .subject(subject)

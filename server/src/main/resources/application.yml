@@ -37,6 +37,15 @@ aliyun:
     region: ${cqwm.aliyun.oss.region}
 
 jwt:
-  secret-key: zxcvbnmlkjhgfdsaqwertyuiop123456
-  expiration : 36000000 # 3600 * 1000 * 10 10个小时
+  admin-secret-key: ${cqwm.jwt.admin-secre-key}
+  admin-expiration : ${cqwm.jwt.admin-expiration} # 3600 * 1000 * 10 10个小时
+  user-secret-key: ${cqwm.jwt.user-secret-key}
+  user-expiration: ${cqwm.jwt.user-expiration}
+  user-token-name: ${cqwm.jwt.user-token-name}
+
+wechat:
+  appid: ${cqwm.wechat.appid}
+  secret: ${cqwm.wechat.secret}
+
+
 
