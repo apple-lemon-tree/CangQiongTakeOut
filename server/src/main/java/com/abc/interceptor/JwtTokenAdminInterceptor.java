@@ -14,7 +14,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 @Slf4j
 @Component
-public class JwtTokenInterceptor implements HandlerInterceptor {
+public class JwtTokenAdminInterceptor implements HandlerInterceptor {
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -26,6 +26,7 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
             return true;
         }
         //1. 获取请求头中的token
+        //admin端登录的时候，携带jwt令牌的请求头字段是token
         String token = request.getHeader("token");
         //2. 校验令牌
         if (token == null || token.isBlank()){

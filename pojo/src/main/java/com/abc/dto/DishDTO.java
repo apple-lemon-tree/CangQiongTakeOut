@@ -11,9 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class DishDTO {
     private Long id;
     //菜品名称

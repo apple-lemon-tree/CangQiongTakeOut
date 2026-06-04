@@ -9,27 +9,36 @@ import com.abc.service.DishService;
 import com.abc.vo.DishVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
-@RestController
+@RestController("adminDishController")
 @RequestMapping("/admin/dish")
 @RequiredArgsConstructor
 public class DishController {
 
     private final DishService dishService;
+    private final StringRedisTemplate stringRedisTemplate;
 
     /**
      * 新增菜品
      * @param dishDTO
      * @return
      */
+    @CacheEvict(cacheNames = "dishCache",allEntries = true)
     @PostMapping
     public Result save(@RequestBody DishDTO dishDTO){
         log.info("新增菜品：{}",dishDTO);
         dishService.saveWithFlavor(dishDTO);
+        //清理缓存数据
+        String key = "dish_" + dishDTO.getCategoryId();
+        stringRedisTemplate.delete(key);
         return Result.success("新增菜品成功");
     }
 
@@ -51,6 +60,7 @@ public class DishController {
      * @return
      */
     @DeleteMapping
+    @CacheEvict(cacheNames = "dishCache",allEntries = true)
     public Result delete(@RequestParam List<Long> ids){
         log.info("菜品批量删除:{}",ids);
         dishService.deleteBatch(ids);
@@ -75,6 +85,7 @@ public class DishController {
      * @return
      */
     @PutMapping
+    @CacheEvict(cacheNames = "dishCache",allEntries = true)
     public Result updateDishWithFlavor(@RequestBody DishDTO dishDTO){
         log.info("修改菜品：{}",dishDTO);
         dishService.updateWithFlavor(dishDTO);
@@ -88,6 +99,7 @@ public class DishController {
      * @return
      */
     @PostMapping("/status/{status}")
+    @CacheEvict(cacheNames = "dishCache",allEntries = true)
     public Result startOrStop(@PathVariable Integer status,Long id){
         log.info("停售/启售 菜品：{}",id);
         dishService.startOrStop(status,id);
@@ -100,9 +112,11 @@ public class DishController {
      * @return
      */
     @GetMapping("/list")
-    public Result list(Long categoryId){
+    @CacheEvict(cacheNames = "dishCache",allEntries = true)
+    public Result<List<Dish>> list(Long categoryId){
         log.info("根据分类Id查询菜品:{}",categoryId);
         List<Dish> dishes = dishService.list(categoryId);
         return Result.success("查询成功",dishes);
     }
+
 }

@@ -10,13 +10,14 @@ import com.abc.result.Result;
 import com.abc.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @Slf4j
-@RestController
+@RestController("adminCategoryController")
 @RequestMapping("/admin/category")
 @RequiredArgsConstructor
 public class CategoryController {
@@ -41,6 +42,7 @@ public class CategoryController {
      * @return
      */
     @PostMapping("/status/{status}")
+    @CacheEvict(cacheNames = "categoryCache",allEntries = true)
     public Result startorStop(@PathVariable Integer status, Long id){
         log.info("修改{} 菜品/套餐 的状态为 启用/禁用",id);
         categoryService.startOrStop(status,id);
@@ -84,6 +86,11 @@ public class CategoryController {
         return Result.success("根据id删除 菜品/套餐", id);
     }
 
+    /**
+     * 根据类型id查询菜品
+     * @param type
+     * @return
+     */
     @GetMapping("/list")
     public Result<List<Category>> selectByType(Integer type){
         log.info("根据类型查询菜品,{}",type);

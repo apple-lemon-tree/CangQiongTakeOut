@@ -2,7 +2,9 @@ package com.abc.service;
 
 import com.abc.dto.SetmealDTO;
 import com.abc.dto.SetmealQueryDTO;
+import com.abc.entity.Setmeal;
 import com.abc.result.PageResult;
+import com.abc.vo.DishItemVO;
 import com.abc.vo.SetmealVO;
 
 import java.util.List;
@@ -19,4 +21,8 @@ public interface SetmealService {
     void updateSetmealStatus(Integer status, Long id);
 
     void deleteBatch(List<Long> ids);
+
+    List<Setmeal> list(Long categoryId);
+
+    List<DishItemVO> getDishItemById(Long id);
 }

@@ -23,6 +23,15 @@ spring:
           max-idle: 10
           min-idle: 1
           time-between-eviction-runs: 10s
+      database: 0
+  cache:
+    type: redis
+    redis:
+      # 30 * 60 * 1000  30分钟
+      time-to-live: 1800000
+      # 是否允许缓存空值，默认是false，开启后可以解决缓存穿透问题
+      cache-null-values: true
+
 
 mybatis:
   configuration:
@@ -37,11 +46,9 @@ aliyun:
     region: ${cqwm.aliyun.oss.region}
 
 jwt:
-  admin-secret-key: ${cqwm.jwt.admin-secre-key}
-  admin-expiration : ${cqwm.jwt.admin-expiration} # 3600 * 1000 * 10 10个小时
-  user-secret-key: ${cqwm.jwt.user-secret-key}
-  user-expiration: ${cqwm.jwt.user-expiration}
-  user-token-name: ${cqwm.jwt.user-token-name}
+  secret-key: ${cqwm.jwt.secre-key}
+  expiration : ${cqwm.jwt.expiration} # 3600 * 1000 * 10 10个小时
+
 
 wechat:
   appid: ${cqwm.wechat.appid}

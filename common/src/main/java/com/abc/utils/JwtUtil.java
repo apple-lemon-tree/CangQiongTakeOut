@@ -14,10 +14,11 @@ import java.util.Map;
 
 @Component
 public class JwtUtil {
-    @Value("${jwt.admin-secret-key}")
+    @Value("${jwt.secret-key}")
     private String secretKey;//jwt中尾部签名，可以防止Token被篡改，确保安全性
-    @Value("${jwt.admin-expiration}")
+    @Value("${jwt.expiration}")
     private Long expirationTime;
+
 
 
     // 获取JWT中第三部分，签名
@@ -27,16 +28,14 @@ public class JwtUtil {
 
     /**
      * 生成JWT令牌
-     * @param subject 用户唯一标识
      * @param claims 设置的信息
      * @return
      */
-    public String generateToken(String subject, Map<String,Object> claims){
+    public String generateToken(Map<String,Object> claims){
 
         //TODO
         return Jwts.builder()
                 .claims(claims)
-                .subject(subject)
                 .signWith(getSecretKey())
                 .expiration(new Date(System.currentTimeMillis() + expirationTime))
                 .compact();

@@ -29,4 +29,15 @@
         </set>
         where id = #{id}
     </update>
+
+    <!-- 根据类型type查询分类信息 -->
+    <select id="selectByType" resultType="com.abc.entity.Category">
+        select * from category
+        where status = 1
+        <if test="type!=null">
+            and type = #{type}
+        </if>
+        order by sort asc, create_time desc
+    </select>
+
 </mapper>

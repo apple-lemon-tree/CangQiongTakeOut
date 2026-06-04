@@ -14,6 +14,7 @@ import com.abc.mapper.SetmealMapper;
 import com.abc.result.PageResult;
 import com.abc.service.DishService;
 import com.abc.service.SetmealService;
+import com.abc.vo.DishItemVO;
 import com.abc.vo.DishVO;
 import com.abc.vo.SetmealVO;
 import com.github.pagehelper.Page;
@@ -21,6 +22,8 @@ import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,6 +72,7 @@ public class SetmealServiceImpl implements SetmealService {
 
     @Transactional
     @Override
+    @CacheEvict(cacheNames = "setmealCache", allEntries = true)
     public void updateSetmealInfo(SetmealDTO setmealDTO) {
         //对于基础数据，直接更新
         Setmeal setmeal = new Setmeal();
@@ -86,6 +90,7 @@ public class SetmealServiceImpl implements SetmealService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "setmealCache", allEntries = true)
     public void updateSetmealStatus(Integer status, Long id) {
         SetmealVO setmealVO = setmealMapper.selectById(id);
         List<SetmealDish> setmealDishes = setmealVO.getSetmealDishes();
@@ -105,6 +110,7 @@ public class SetmealServiceImpl implements SetmealService {
 
     @Transactional
     @Override
+    @CacheEvict(cacheNames = "setmealCache", allEntries = true)
     public void deleteBatch(List<Long> ids) {
         //起售中的套餐不能删除
         for (Long id: ids){
@@ -114,6 +120,18 @@ public class SetmealServiceImpl implements SetmealService {
             }
         }
 
+    }
+
+    @Cacheable(cacheNames = "setmealCache", key = "#categoryId") // key: setmealCache::100
+    @Override
+    public List<Setmeal> list(Long categoryId) {
+        return setmealMapper.list(categoryId);
+    }
+
+    @Override
+    @Cacheable(cacheNames = "setmealDishesCache",key= "#id")
+    public List<DishItemVO> getDishItemById(Long id) {
+       return setmealMapper.getDishItemById(id);
     }
 
 

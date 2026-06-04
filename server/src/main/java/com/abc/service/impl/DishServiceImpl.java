@@ -19,10 +19,13 @@ import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -63,6 +66,7 @@ public class DishServiceImpl implements DishService {
 
     @Transactional
     @Override
+    @CacheEvict(cacheNames = "dishCache",allEntries = true)
     public void deleteBatch(List<Long> ids) {
         //起售中的菜品不能删除
         for (Long id:ids){
@@ -88,6 +92,7 @@ public class DishServiceImpl implements DishService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "dishCache",allEntries = true)
     public void updateWithFlavor(DishDTO dishDTO) {
         Dish dish  = new Dish();
         BeanUtils.copyProperties(dishDTO,dish);
@@ -118,5 +123,22 @@ public class DishServiceImpl implements DishService {
     public List<Dish> list(Long id) {
         List<Dish> dishes = dishMapper.list(id);
         return dishes;
+    }
+
+    @Cacheable(cacheNames = "dishCache", key = "#categoryId")
+    @Override
+    public List<DishVO> listWithFlavor(Long categoryId) {
+        List<Dish> dishList = dishMapper.list(categoryId);
+        List<DishVO> dishVOList = new ArrayList<>();
+        for (Dish d: dishList){
+            DishVO dishVO = new DishVO();
+            BeanUtils.copyProperties(d,dishVO);
+
+            List<DishFlavor> flavors = dishFlavorMapper.getFlavorByDishId(d.getId());
+
+            dishVO.setFlavors(flavors);
+            dishVOList.add(dishVO);
+        }
+        return dishVOList;
     }
 }

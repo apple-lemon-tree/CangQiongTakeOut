@@ -12,9 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class SetmealDTO {
     private Long id;
     private Long categoryId;

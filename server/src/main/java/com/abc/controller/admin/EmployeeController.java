@@ -42,7 +42,7 @@ public class EmployeeController {
         claims.put("id",employee.getId());
         claims.put("username",employee.getUsername());
         //拿到jwt令牌
-        String token = jwtUtil.generateToken(employee.getName(),claims);
+        String token = jwtUtil.generateToken(claims);
         EmployeeLoginVO employeeLoginVO = EmployeeLoginVO.builder()
                 .id(employee.getId())
                 .userName(employee.getUsername())
