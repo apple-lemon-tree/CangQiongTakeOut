@@ -3,6 +3,7 @@ package com.abc.vo;
 import com.abc.entity.OrderDetail;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 /**
  * 前端接口类，比数据库的orders表/Orders实体类多两个字段，分别是
  * orderDetailList:user端分页查询订单时要用到的订单菜品列表

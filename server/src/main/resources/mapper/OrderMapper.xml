@@ -29,6 +29,7 @@
         order by order_time desc
     </select>
 
+
     <!-- 用户下单，往orders表里插入新的订单数据 -->
     <insert id="insert" parameterType="com.abc.entity.Orders" useGeneratedKeys="true" keyProperty="id">
         insert into orders (number, status, user_id, address_book_id, order_time, checkout_time,
@@ -56,5 +57,49 @@
         </set>
         where id = #{id}
     </update>
+
+    <select id="sumByMap" resultType="java.lang.Double">
+        select sum(amount) from orders
+        <where>
+            <if test="begin != null">
+                and order_time &gt; #{begin}
+            </if>
+            <if test="end != null">
+                and order_time &lt; #{end}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+    <select id="countOrderByMap" resultType="java.lang.Integer">
+        select count(id) from orders
+        <where>
+            <if test="begin != null">
+                and order_time &gt; #{begin}
+            </if>
+            <if test="end != null">
+                and order_time &lt; #{end}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <select id="getSalesTop10" resultType="com.abc.dto.GoodsSalesDTO">
+        select od.name, sum(od.number) number
+        from order_detail od left join orders o on od.order_id = o.id
+        where o.status = 5
+        <if test="begin != null">
+            and o.order_time &gt; #{begin}
+        </if>
+        <if test="end != null">
+            and o.order_time &lt; #{end}
+        </if>
+        group by od.name
+        order by number desc
+        limit 0,10
+    </select>
 
 </mapper>

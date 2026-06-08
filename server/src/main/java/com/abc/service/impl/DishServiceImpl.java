@@ -125,7 +125,8 @@ public class DishServiceImpl implements DishService {
         return dishes;
     }
 
-    @Cacheable(cacheNames = "dishCache", key = "#categoryId")
+    // sync=true用于解决缓存击穿问题   =true会启动同步模式，当缓存未命中时，多个并发请求仅有一个线程会执行目标方法
+    @Cacheable(cacheNames = "dishCache", key = "#categoryId", sync = true)
     @Override
     public List<DishVO> listWithFlavor(Long categoryId) {
         List<Dish> dishList = dishMapper.list(categoryId);

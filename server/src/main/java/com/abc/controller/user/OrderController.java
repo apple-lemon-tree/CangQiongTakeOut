@@ -91,4 +91,15 @@ public class OrderController {
         return Result.success("用户又来了一单");
     }
 
+    /**
+     * 客户催单
+     * @param id
+     * @return
+     */
+    @GetMapping("/reminder/{id}")
+    public Result reminder(@PathVariable Long id){
+        orderService.reminder(id);
+        return Result.success("催单成功");
+    }
+
 }

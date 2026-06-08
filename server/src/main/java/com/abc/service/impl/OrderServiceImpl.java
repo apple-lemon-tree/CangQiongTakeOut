@@ -1,6 +1,8 @@
 package com.abc.service.impl;
 
+import cn.hutool.json.JSON;
 import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.abc.constant.MessageConstant;
 import com.abc.context.CurrentHolder;
 import com.abc.dto.*;
@@ -15,6 +17,7 @@ import com.abc.vo.OrderPaymentVO;
 import com.abc.vo.OrderStatisticsVO;
 import com.abc.vo.OrderSubmitVO;
 import com.abc.vo.OrderVO;
+import com.abc.websocket.WebSocketServer;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -39,6 +40,7 @@ public class OrderServiceImpl implements OrderService {
     private final AddressBookMapper addressBookMapper;
     private final ShoppingCartMapper shoppingCartMapper;
     private final UserMapper userMapper;
+    private final WebSocketServer webSocketServer;
 
     @Transactional
     @Override
@@ -124,6 +126,13 @@ public class OrderServiceImpl implements OrderService {
                 .build();
 
         orderMapper.update(order);
+        //通过websocket向客户端浏览器推送消息 type oderId content
+        Map map = new HashMap<>();
+        map.put("type",1);
+        map.put("orderId",orderDB.getId());
+        map.put("content","订单号:"+orderNumber);
+        String json = JSONUtil.toJsonStr(map);
+        webSocketServer.sendToAllClient(json);
     }
 
     @Override
@@ -379,5 +388,20 @@ public class OrderServiceImpl implements OrderService {
                 .deliveryTime(LocalDateTime.now())
                 .build();
         orderMapper.update(orders1);
+    }
+
+
+    @Override
+    public void reminder(Long id) {
+        Orders od = orderMapper.getByOrderId(id);
+
+        if (od == null){
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+        Map map = new HashMap<>();
+        map.put("type",2);
+        map.put("orderId",id);
+        map.put("content","订单号:" + od.getNumber());
+        webSocketServer.sendToAllClient(JSONUtil.toJsonStr(map));
     }
 }

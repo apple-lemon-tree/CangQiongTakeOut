@@ -1,10 +1,15 @@
 package com.abc.mapper;
 
+import com.abc.dto.GoodsSalesDTO;
 import com.abc.dto.OrderPageQueryDTO;
 import com.abc.entity.Orders;
 import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface OrderMapper {
@@ -25,4 +30,13 @@ public interface OrderMapper {
 
     @Select("select count(id) from sky_take_out.orders where status = #{status}")
     Integer countStatus(Integer status);
+
+    @Select("select * from sky_take_out.orders where status = #{pendingPayment} and order_time < #{time}")
+    List<Orders> getByStatusAndOrderTimeLT(Integer pendingPayment, LocalDateTime time);
+
+    Double sumByMap(Map map);
+
+    Integer countOrderByMap(Map map);
+
+    List<GoodsSalesDTO> getSalesTop10(LocalDateTime begin, LocalDateTime end);
 }

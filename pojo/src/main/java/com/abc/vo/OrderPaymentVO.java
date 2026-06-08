@@ -1,12 +1,14 @@
 package com.abc.vo;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class OrderPaymentVO {
     private String nonceStr; //随机字符串
     private String paySign; //签名

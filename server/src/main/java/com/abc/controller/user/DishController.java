@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 @RestController("userDishController")
 @RequestMapping("/user/dish")
 @RequiredArgsConstructor
+@Validated //参数校验  处理缓存穿透问题
 public class DishController {
 
     private final DishService dishService;
@@ -37,7 +39,7 @@ public class DishController {
     @GetMapping("/list")
     public Result<List<DishVO>> listWithFlavor(Long categoryId){
         log.info("根据分类Id查询菜品:{}",categoryId);
-        List<DishVO> list = dishService.listWithFlavor(categoryId);
+        List<DishVO> list = dishService.listWithFlavor(categoryId).orElse(null);
         return Result.success("查询成功",list);
     }
 
