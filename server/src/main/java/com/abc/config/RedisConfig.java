@@ -11,7 +11,10 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 
 import java.time.Duration;
 
-
+/*
+Spring Cache + Redis集成配置
+作用：配置Spring的缓存管理器(CacheManager)，从而可以使用@Cacheable,@CacheEvict等注解来操作Redis缓存
+ */
 @Configuration
 public class RedisConfig{
     @Bean

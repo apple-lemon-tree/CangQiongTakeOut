@@ -15,4 +15,7 @@ public class MessageConstant {
     public static final String SHOPPING_CART_IS_NULL = "购物车数据为空，不能下单";
     public static final String ORDER_STATUS_ERROR = "订单状态错误";
     public static final String ORDER_NOT_FOUND = "订单不存在";
+    public static final String SYSTEM_BUSY_MSG = "系统繁忙，请稍后再试";
+    public static final String OPERATION_FREQUENT_MSG = "操作过于频繁，请稍后再试";
+    public static final String ITEM_NOT_FOUND_MSG = "商品不存在";
 }

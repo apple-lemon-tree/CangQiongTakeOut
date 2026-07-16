@@ -39,7 +39,7 @@ public class DishController {
     @GetMapping("/list")
     public Result<List<DishVO>> listWithFlavor(Long categoryId){
         log.info("根据分类Id查询菜品:{}",categoryId);
-        List<DishVO> list = dishService.listWithFlavor(categoryId).orElse(null);
+        List<DishVO> list = dishService.listWithFlavor(categoryId);
         return Result.success("查询成功",list);
     }
 

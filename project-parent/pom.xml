@@ -37,6 +37,7 @@
         <spring.boot.starter.aop.version>3.5.14</spring.boot.starter.aop.version>
         <mybatis.sprint.boot.starter.version>4.0.1</mybatis.sprint.boot.starter.version>
         <poi.version>3.16</poi.version>
+        <redission.version>3.24.1</redission.version>
     </properties>
 
     <dependencies>
@@ -66,6 +67,13 @@
             </dependency>
 
             <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson-spring-boot-starter</artifactId>
+                <version>${redission.version}</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
                 <version>${jackson.annotation.version}</version>
@@ -92,7 +100,7 @@
                 <artifactId>jaxb-runtime</artifactId>
                 <version>${jaxb.runtime.version}</version>
             </dependency>
-            <!-- Source: https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
+
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt</artifactId>

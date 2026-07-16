@@ -29,6 +29,11 @@ public class UserServiceImpl implements UserService {
     private final WeChatProperties weChatProperties;
     private static final String WX_LOGIN = "https://api.weixin.qq.com/sns/jscode2session";
 
+    /**
+     * 微信小程序登录
+     * @param userLoginDTO
+     * @return
+     */
     @Override
     public User wxLogin(UserLoginDTO userLoginDTO) {
         //调用微信接口服务，获得当前微信用户的openid
