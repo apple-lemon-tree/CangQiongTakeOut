@@ -29,13 +29,14 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
         //admin端登录的时候，携带jwt令牌的请求头字段是token
         String token = request.getHeader("token");
         //2. 校验令牌
-        if (token == null || token.isBlank()){
-            //令牌为空，则未登录
+        if (token == null || token.isBlank()){//令牌为空，则未登录
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }
         try {
+            // 令牌不为空
             Claims claims = jwtUtil.parseJWT(token);
+            // 拿到用户id，将其存入ThreadLocal
             Long empId = Long.valueOf(claims.get("id").toString());
             CurrentHolder.setCurrentId(empId);
         } catch (Exception e){
@@ -47,7 +48,7 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable Exception ex) throws Exception {
-        HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
+        CurrentHolder.remove();
     }
 
 

@@ -105,4 +105,9 @@ public class OrderVO {
     形如 米饭*2;酸菜鱼*1;冰可乐*3;
     */
     private String orderDishes;
+
+    //控制 评论/追评 按钮
+    private String commentBtnText;
+
+
 }

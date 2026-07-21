@@ -18,6 +18,8 @@ import java.util.Map;
 
 /**
  * WebSocket服务
+ * 主要用于客户支付成功，商家会收到一个提醒
+ * 以及客户催单，商家也会收到提醒
  */
 @Component
 @ServerEndpoint("/ws/{sid}")

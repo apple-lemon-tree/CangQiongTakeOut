@@ -41,6 +41,7 @@ public class OrderServiceImpl implements OrderService {
     private final ShoppingCartMapper shoppingCartMapper;
     private final UserMapper userMapper;
     private final WebSocketServer webSocketServer;
+    private final CommentMapper commentMapper;
 
     @Transactional
     @Override
@@ -153,6 +154,22 @@ public class OrderServiceImpl implements OrderService {
                 BeanUtils.copyProperties(order, orderVO);
                 //订单中下关系的菜品信息
                 orderVO.setOrderDetailList(orderDetails);
+                //对待已完成订单的处理
+                if (Objects.equals(order.getStatus(), Orders.COMPLETED)){
+                    Integer comments = commentMapper.selectByOrderId(order.getId());
+                    //情况1： comments为空 -> 未评价
+                    if (comments == 0){
+                        orderVO.setCommentBtnText("评价");
+                    } else if (comments == 1) {
+                        //情况2： 有评价记录，但还没有追评过 -> 可以追评 0=为追评，1=已追评
+                        orderVO.setCommentBtnText("追评");
+                    }else{
+                        //情况3： 已经追评过了 -> 按钮隐藏或置灰
+                        orderVO.setCommentBtnText("已追评");
+                    }
+                }else{
+                    orderVO.setCommentBtnText(null);
+                }
 
                 //把上面两部分数据整合为OrderVO,符合接口中后端返回数据的格式
                 list.add(orderVO);

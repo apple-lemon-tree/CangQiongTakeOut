@@ -27,7 +27,7 @@ public class ShoppingCartController {
     public Result add(@RequestBody ShoppingCartDTO shoppingCartDTO){
         log.info("添加购物车，商品信息为：{}",shoppingCartDTO);
         shoppingCartService.addShoppingCart(shoppingCartDTO);
-        return Result.success("");
+        return Result.success("添加商品至购物车成功！");
     }
 
     /**

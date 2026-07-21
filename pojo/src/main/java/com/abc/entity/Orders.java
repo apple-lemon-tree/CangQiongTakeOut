@@ -100,4 +100,10 @@ public class Orders {
 
     //餐具数量状态  1按餐量提供  0选择具体数量
     private Integer tablewareStatus;
+
+    //订单评论
+    private Long commentId;
+
+    //是否追评
+    private Integer isAppend;
 }
